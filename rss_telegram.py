@@ -1,12 +1,14 @@
 # rss_telegram.py
 # RSS (WordPress) -> Telegram, chạy liên tục, chống trùng lặp, dùng ETag/Last-Modified.
-# Yêu cầu: pip install feedparser httpx tenacity python-dotenv aiosqlite
+# Yêu cầu: pip install feedparser httpx tenacity aiosqlite
 
 import asyncio
 import os
 import time
 import hashlib
 import logging
+import json
+import sys
 from typing import Optional, Tuple, List
 import feedparser
 import httpx
@@ -14,21 +16,43 @@ from tenacity import retry, wait_exponential, stop_after_attempt
 from contextlib import asynccontextmanager
 import aiosqlite
 
+# ================== ĐỌC CẤU HÌNH ==================
+CONFIG_FILE = "config.json"
+
+def load_config():
+    """Đọc cấu hình từ file config.json"""
+    if not os.path.exists(CONFIG_FILE):
+        print(f"❌ Không tìm thấy file {CONFIG_FILE}!")
+        print("📝 Vui lòng chạy: python setup.py để cấu hình")
+        sys.exit(1)
+
+    try:
+        with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+        return config
+    except json.JSONDecodeError as e:
+        print(f"❌ Lỗi đọc file config.json: {e}")
+        print("📝 Vui lòng chạy: python setup.py để cấu hình lại")
+        sys.exit(1)
+    except Exception as e:
+        print(f"❌ Lỗi: {e}")
+        sys.exit(1)
+
+# Đọc config
+config = load_config()
+
 # ================== CẤU HÌNH ==================
-# (1) Telegram — đã gắn sẵn token & chat_id của bạn
-BOT_TOKEN = "8012634282:AAESreFtJToDID3HyptNtcy_rQdFFm4Jo30"
-CHAT_ID   = "-5026178584"   # nhóm "Hóng biến - RSS" (lưu ý dấu âm)
+# (1) Telegram
+BOT_TOKEN = config["telegram"]["bot_token"]
+CHAT_ID = config["telegram"]["chat_id"]
 
-# (2) Danh sách RSS WordPress (thêm của bạn vào đây)
-FEEDS: List[str] = [
-    "https://honghot.click/feed/",
-]
+# (2) Danh sách RSS feeds
+FEEDS: List[str] = config.get("feeds", [])
 
-# (3) Chu kỳ quét (giây)
-POLL_INTERVAL = 90
-
-# (4) DB lưu trạng thái đã gửi
-DB_PATH = "rss_state.sqlite3"
+# (3) Thiết lập
+settings = config.get("settings", {})
+POLL_INTERVAL = settings.get("poll_interval", 90)
+DB_PATH = settings.get("db_path", "rss_state.sqlite3")
 
 # (5) Định dạng thông báo
 def format_message(title: str, url: str, source: str) -> str:
@@ -48,16 +72,39 @@ logging.basicConfig(
 
 # ================== VALIDATION ==================
 def validate_config():
+    """Kiểm tra tính hợp lệ của cấu hình"""
     if not BOT_TOKEN or ":" not in BOT_TOKEN:
-        raise SystemExit("Thiếu/sai BOT_TOKEN.")
+        print("❌ Thiếu hoặc sai BOT_TOKEN!")
+        print("📝 Vui lòng chạy: python setup.py để cấu hình lại")
+        sys.exit(1)
+
     if not CHAT_ID:
-        raise SystemExit("Thiếu CHAT_ID.")
+        print("❌ Thiếu CHAT_ID!")
+        print("📝 Vui lòng chạy: python setup.py để cấu hình lại")
+        sys.exit(1)
+
     # Cảnh báo nhầm chat_id = id của bot
     bot_id_from_token = BOT_TOKEN.split(":", 1)[0]
     if CHAT_ID == bot_id_from_token:
-        raise SystemExit(
-            f"CHAT_ID đang là ID BOT ({CHAT_ID}). Hãy dùng ID nhóm/kênh (thường -100...) hoặc @username kênh."
-        )
+        print(f"❌ CHAT_ID đang là ID BOT ({CHAT_ID})!")
+        print("   Hãy dùng ID nhóm/kênh (thường -100...) hoặc @username kênh.")
+        print("📝 Vui lòng chạy: python setup.py để cấu hình lại")
+        sys.exit(1)
+
+    if not FEEDS:
+        print("⚠️  Cảnh báo: Chưa có RSS feed nào trong cấu hình!")
+        print("📝 Vui lòng chạy: python setup.py để thêm feed")
+        response = input("Bạn có muốn tiếp tục? (y/n): ").lower()
+        if response != 'y':
+            sys.exit(0)
+
+    print("✅ Cấu hình hợp lệ!")
+    print(f"📱 Bot Token: {BOT_TOKEN[:20]}...")
+    print(f"💬 Chat ID: {CHAT_ID}")
+    print(f"📰 Số lượng feeds: {len(FEEDS)}")
+    print(f"⏱️  Chu kỳ quét: {POLL_INTERVAL}s")
+    print()
+
 validate_config()
 
 TELEGRAM_API = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
