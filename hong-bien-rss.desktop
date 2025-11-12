@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Hong Bien RSS Tool
+Comment=RSS to Telegram Bot with GUI
+Exec=/bin/bash -c "cd %d && ./run-gui.sh"
+Icon=%d/icon.png
+Terminal=false
+Categories=Network;News;
+Keywords=rss;telegram;bot;

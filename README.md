@@ -2,14 +2,19 @@
 
 Tool tự động gửi bài viết mới từ RSS feed (WordPress, blog, Facebook...) vào Telegram channel/group của bạn.
 
+> 🎉 **NEW:** Phiên bản 2.0 với **Giao diện đồ họa (GUI)** hiện đại!
+
 ## ✨ Tính năng
 
+- 🖥️ **Giao diện đồ họa dễ sử dụng** (CustomTkinter)
 - 🔄 Tự động quét RSS feeds theo chu kỳ
 - 🚫 Chống trùng lặp (không gửi bài đã gửi)
 - ⚡ Tối ưu băng thông với ETag/Last-Modified
 - 💾 Lưu trạng thái với SQLite
 - 🔁 Tự động retry khi lỗi mạng
-- 📝 Cấu hình dễ dàng qua giao diện CLI
+- 📊 Real-time monitoring và logs
+- 🎨 Dark/Light mode
+- 📝 Cấu hình dễ dàng qua GUI hoặc CLI
 
 ## 📋 Yêu cầu
 
@@ -19,49 +24,75 @@ Tool tự động gửi bài viết mới từ RSS feed (WordPress, blog, Facebo
 
 ## 🚀 Cài đặt nhanh
 
-### 1. Clone repository
+### Cách 1: Giao diện đồ họa (GUI) - Khuyến nghị ⭐
 
+#### Linux/Mac
 ```bash
 git clone https://github.com/phamhuuviet13953/hong-bien-rss.git
 cd hong-bien-rss
+chmod +x run-gui.sh
+./run-gui.sh
 ```
 
-### 2. Tạo virtual environment (khuyến nghị)
+#### Windows
+```batch
+git clone https://github.com/phamhuuviet13953/hong-bien-rss.git
+cd hong-bien-rss
+run-gui.bat
+```
+
+Script sẽ tự động:
+- ✅ Tạo virtual environment
+- ✅ Cài đặt dependencies
+- ✅ Mở giao diện đồ họa
+
+**Trong giao diện GUI:**
+1. Vào tab "⚙️ Cấu hình"
+2. Nhập Bot Token và Chat ID
+3. Thêm RSS feeds (mỗi dòng một URL)
+4. Bấm "💾 Lưu cấu hình"
+5. Bấm "▶️ Bắt đầu"
+
+### Cách 2: Giao diện dòng lệnh (CLI)
+
+#### Linux/Mac
+```bash
+git clone https://github.com/phamhuuviet13953/hong-bien-rss.git
+cd hong-bien-rss
+./run.sh
+```
+
+#### Windows
+```batch
+git clone https://github.com/phamhuuviet13953/hong-bien-rss.git
+cd hong-bien-rss
+run.bat
+```
+
+### Cách 3: Manual (Nâng cao)
 
 ```bash
-# Linux/Mac
+# 1. Clone repository
+git clone https://github.com/phamhuuviet13953/hong-bien-rss.git
+cd hong-bien-rss
+
+# 2. Tạo virtual environment
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate  # Linux/Mac
+# hoặc venv\Scripts\activate  # Windows
 
-# Windows
-python -m venv venv
-venv\Scripts\activate
-```
-
-### 3. Cài đặt dependencies
-
-```bash
+# 3. Cài đặt dependencies
 pip install -r requirements.txt
-```
 
-### 4. Cấu hình tool
-
-```bash
+# 4. Cấu hình (CLI)
 python setup.py
-```
 
-Làm theo hướng dẫn trên màn hình để:
-- Nhập Bot Token
-- Nhập Chat ID
-- Thêm RSS feeds
-
-### 5. Chạy bot
-
-```bash
+# 5. Chạy
+# GUI:
+python gui.py
+# hoặc CLI:
 python rss_telegram.py
 ```
-
-Bot sẽ chạy liên tục và tự động gửi bài viết mới vào Telegram.
 
 ## 📝 Hướng dẫn chi tiết
 
@@ -175,6 +206,90 @@ Hỗ trợ HTML tags:
 - `<a href="url">text</a>` - Link
 - `<code>text</code>` - Code
 
+## 🖥️ Hướng dẫn sử dụng GUI
+
+### Khởi động GUI
+
+```bash
+# Linux/Mac
+./run-gui.sh
+
+# Windows
+run-gui.bat
+
+# Hoặc trực tiếp
+python gui.py
+```
+
+### Giao diện chính
+
+GUI có 3 tab chính:
+
+#### 1. ⚙️ Tab Cấu hình
+
+**Cấu hình Telegram:**
+- **Bot Token**: Nhập token từ @BotFather
+- **Chat ID**: Nhập ID của nhóm/kênh
+- **Test kết nối**: Kiểm tra cấu hình có đúng không
+
+**RSS Feeds:**
+- Thêm các RSS feed URLs (mỗi dòng một URL)
+- Hỗ trợ nhiều nguồn cùng lúc
+
+**Thiết lập:**
+- **Chu kỳ quét**: Thời gian giữa các lần quét (giây)
+
+**Lưu cấu hình:**
+- Bấm "💾 Lưu cấu hình" để lưu thay đổi
+
+#### 2. 📊 Tab Monitor
+
+**Xem Logs real-time:**
+- Hiển thị tất cả hoạt động của bot
+- Tự động scroll (có thể tắt)
+- Nút "🗑️ Xóa logs" để làm sạch
+
+**Thông tin:**
+- Trạng thái bot (Đang chạy/Dừng)
+- Số bài đã gửi
+- Số lỗi gặp phải
+
+#### 3. ℹ️ Tab Thông tin
+
+**Thông tin tool:**
+- Phiên bản
+- Hướng dẫn nhanh
+- Links hữu ích
+
+**Chuyển đổi giao diện:**
+- Dark mode (mặc định)
+- Light mode
+- System (theo hệ thống)
+
+### Control Panel
+
+Ở dưới cùng của cửa sổ:
+
+- **▶️ Bắt đầu**: Khởi động bot
+- **⏹️ Dừng**: Dừng bot
+- **Trạng thái**: Hiển thị trạng thái hiện tại
+- **Thống kê**: Số bài đã gửi và lỗi
+
+### Tính năng nổi bật
+
+✅ **Show/Hide Token**: Ẩn/hiện Bot Token để bảo mật
+✅ **Auto-scroll logs**: Tự động cuộn xuống log mới
+✅ **Dark/Light mode**: Chuyển đổi giao diện dễ dàng
+✅ **Real-time monitoring**: Xem hoạt động bot trực tiếp
+✅ **Safe exit**: Xác nhận trước khi đóng khi bot đang chạy
+
+### Shortcuts & Tips
+
+**Tip 1**: Luôn test kết nối Telegram trước khi chạy bot
+**Tip 2**: Kiểm tra logs tab để debug nếu có lỗi
+**Tip 3**: Đặt chu kỳ quét >= 30 giây để tránh spam
+**Tip 4**: Có thể chạy cả GUI và CLI cùng lúc (khác config)
+
 ## 🐳 Chạy với Docker
 
 ### Tạo Docker image
@@ -279,19 +394,42 @@ Nếu chạy nhiều instance cùng lúc, SQLite có thể bị lock:
 - Chỉ chạy 1 instance
 - Hoặc dùng DB path khác nhau cho mỗi instance
 
+### GUI không mở được
+
+**Linux:**
+- Cần cài đặt thêm: `sudo apt-get install python3-tk`
+- Với Wayland: Thử chạy với XWayland
+
+**macOS:**
+- Cần cài đặt Tcl/Tk: `brew install python-tk`
+
+**Windows:**
+- Python từ python.org đã bao gồm Tkinter
+- Nếu lỗi, cài lại Python và check "tcl/tk and IDLE"
+
 ## 📚 Cấu trúc project
 
 ```
 hong-bien-rss/
-├── rss_telegram.py       # Bot chính
-├── setup.py              # Script cấu hình
-├── requirements.txt      # Dependencies
-├── config.json.example   # Template cấu hình
-├── config.json           # Cấu hình (git ignored)
-├── rss_state.sqlite3     # Database (git ignored)
-├── Dockerfile            # Docker build
-├── .gitignore           # Git ignore rules
-└── README.md            # File này
+├── gui.py                    # 🖥️  Giao diện đồ họa (NEW!)
+├── rss_telegram.py           # 🤖 Bot chính (CLI)
+├── setup.py                  # ⚙️  Script cấu hình CLI
+├── run-gui.sh               # 🚀 Launcher GUI (Linux/Mac)
+├── run-gui.bat              # 🚀 Launcher GUI (Windows)
+├── run.sh                   # 🚀 Launcher CLI (Linux/Mac)
+├── run.bat                  # 🚀 Launcher CLI (Windows)
+├── create_icon.py           # 🎨 Script tạo icon
+├── requirements.txt         # 📦 Dependencies
+├── config.json.example      # 📝 Template cấu hình
+├── config.json              # 🔒 Cấu hình (git ignored)
+├── rss_state.sqlite3        # 💾 Database (git ignored)
+├── Dockerfile               # 🐳 Docker build
+├── docker-compose.yml       # 🐳 Docker compose
+├── hong-bien-rss.desktop    # 🖼️  Linux desktop launcher
+├── .gitignore              # 🚫 Git ignore rules
+├── LICENSE                  # ⚖️  MIT License
+├── README.md               # 📖 Hướng dẫn đầy đủ
+└── QUICKSTART.md           # ⚡ Hướng dẫn nhanh
 ```
 
 ## 🤝 Đóng góp
