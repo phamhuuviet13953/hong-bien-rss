@@ -36,6 +36,7 @@ REM Install dependencies
 if not exist "venv\.gui_requirements_installed" (
     echo [INFO] Installing GUI dependencies...
     python -m pip install --upgrade pip
+    pip install --upgrade --force-reinstall customtkinter==5.2.2
     pip install -r requirements.txt
     echo. > venv\.gui_requirements_installed
     echo [OK] Dependencies installed
@@ -53,6 +54,14 @@ python gui.py
 
 if errorlevel 1 (
     echo.
+    echo ========================================
     echo [ERROR] An error occurred!
+    echo ========================================
+    echo.
+    echo If you see customtkinter errors, try running:
+    echo    fix-gui.bat
+    echo.
+    echo This will reinstall GUI dependencies.
+    echo.
     pause
 )

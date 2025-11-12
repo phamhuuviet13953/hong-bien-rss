@@ -37,6 +37,7 @@ source venv/bin/activate
 if [ ! -f "venv/.gui_requirements_installed" ]; then
     echo -e "${BLUE}📦 Installing GUI dependencies...${NC}"
     pip install --upgrade pip
+    pip install --upgrade --force-reinstall customtkinter==5.2.2
     pip install -r requirements.txt
     touch venv/.gui_requirements_installed
     echo -e "${GREEN}✅ Dependencies installed${NC}"
@@ -49,3 +50,17 @@ echo -e "${BLUE}🚀 Launching GUI...${NC}"
 echo ""
 
 python gui.py
+
+# Check exit code
+if [ $? -ne 0 ]; then
+    echo ""
+    echo -e "${RED}========================================${NC}"
+    echo -e "${RED}❌ An error occurred!${NC}"
+    echo -e "${RED}========================================${NC}"
+    echo ""
+    echo -e "${YELLOW}If you see customtkinter errors, try running:${NC}"
+    echo -e "   ${BLUE}./fix-gui.sh${NC}"
+    echo ""
+    echo -e "This will reinstall GUI dependencies."
+    echo ""
+fi
