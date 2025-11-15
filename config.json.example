@@ -1,0 +1,13 @@
+{
+  "telegram": {
+    "bot_token": "YOUR_BOT_TOKEN_HERE",
+    "chat_id": "YOUR_CHAT_ID_HERE"
+  },
+  "feeds": [
+    "https://honghot.click/feed/"
+  ],
+  "settings": {
+    "poll_interval": 90,
+    "db_path": "rss_state.sqlite3"
+  }
+}

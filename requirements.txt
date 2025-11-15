@@ -1,0 +1,22 @@
+# Hong Bien RSS Tool - Dependencies
+# Cài đặt: pip install -r requirements.txt
+
+# RSS parsing
+feedparser>=6.0.10
+
+# HTTP client with async support
+httpx>=0.25.0
+
+# Retry mechanism for network requests
+tenacity>=8.2.3
+
+# SQLite async support
+aiosqlite>=0.19.0
+
+# GUI - CustomTkinter (modern UI framework)
+# IMPORTANT: Use specific version to avoid compatibility issues
+customtkinter==5.2.2
+darkdetect>=0.8.0
+
+# Pillow for image support in GUI
+Pillow>=10.0.0

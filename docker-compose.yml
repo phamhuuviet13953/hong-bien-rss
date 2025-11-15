@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  hong-bien-rss:
+    build: .
+    container_name: hong-bien-rss
+    restart: unless-stopped
+    volumes:
+      # Mount config file
+      - ./config.json:/app/config.json:ro
+      # Mount database for persistence
+      - ./rss_state.sqlite3:/app/rss_state.sqlite3
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
